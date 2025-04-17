@@ -25,26 +25,15 @@ module quadrilatero_mac_float (
   localparam fpnew_pkg::fpu_implementation_t FPUImplementation [1] = '{
     '{
         PipeRegs: // FMA Block
-                  '{
-                    '{  1, // FP32
-                        2, // FP64
-                        0, // FP16
-                        0, // FP8
-                        0  // FP16alt
-                      },
-                    '{1, 1, 1, 1, 1},   // DIVSQRT
-                    '{1,
-                      1,
-                      1,
-                      1,
-                      1},   // NONCOMP
-                    '{2,
-                      2,
-                      2,
-                      2,
-                      2}    // CONV
+                  '{// FP32 FP64 FP16 FP8 FP16alt FP8alt
+                    '{   1,   2,   0,  0,   0,      0   },   // FMA Block
+                    '{   1,   1,   1,  1,   1,      1   },   // DIVSQRT
+                    '{   1,   1,   1,  1,   1,      1   },   // NONCOMP
+                    '{   2,   2,   2,  2,   2,      2   },   // CONV
+                    '{   2,   2,   2,  2,   2,      2   }    // DOTP
                     },
         UnitTypes: '{'{fpnew_pkg::PARALLEL,
+                       fpnew_pkg::DISABLED,
                        fpnew_pkg::DISABLED,
                        fpnew_pkg::DISABLED,
                        fpnew_pkg::DISABLED,
@@ -53,8 +42,10 @@ module quadrilatero_mac_float (
                         fpnew_pkg::DISABLED,
                         fpnew_pkg::DISABLED,
                         fpnew_pkg::DISABLED,
+                        fpnew_pkg::DISABLED,
                         fpnew_pkg::DISABLED}, // DIVSQRT
                     '{fpnew_pkg::DISABLED,
+                        fpnew_pkg::DISABLED,
                         fpnew_pkg::DISABLED,
                         fpnew_pkg::DISABLED,
                         fpnew_pkg::DISABLED,
@@ -63,8 +54,14 @@ module quadrilatero_mac_float (
                         fpnew_pkg::DISABLED,
                         fpnew_pkg::DISABLED,
                         fpnew_pkg::DISABLED,
-                        fpnew_pkg::DISABLED}   // CONV
-                    },  
+                        fpnew_pkg::DISABLED,
+                        fpnew_pkg::DISABLED},   // CONV
+                    '{fpnew_pkg::DISABLED,
+                        fpnew_pkg::DISABLED,
+                        fpnew_pkg::DISABLED,
+                        fpnew_pkg::DISABLED,
+                        fpnew_pkg::DISABLED,
+                        fpnew_pkg::DISABLED}},  // DOTP
         PipeConfig: fpnew_pkg::BEFORE
     }
   };
@@ -76,6 +73,7 @@ module quadrilatero_mac_float (
   ) fpu_inst (
     .clk_i          ,
     .rst_ni         ,
+    .hart_id_i      (/* Unused */),
     // Input signals
     .operands_i     ({acc_i,weight_i,data_i}),
     .rnd_mode_i     (fpnew_pkg::RNE),
