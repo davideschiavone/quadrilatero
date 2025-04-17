@@ -108,7 +108,7 @@ module quadrilatero
   logic                                                    [quadrilatero_pkg::N_REGS-1        :0] dispatcher_rw_queue_full         ;
   logic [$clog2(quadrilatero_pkg::MAX_NUM_READ_OPERANDS)-1:0]                                     dispatcher_n_matrix_operands_read;
   logic [xif_pkg::X_NUM_RS  -1:0][xif_pkg::X_RFR_WIDTH-1:0]                                     dispatcher_rs                    ;
-  logic [xif_pkg::X_ID_WIDTH-1:0]                                                               dispatcher_rs_valid              ;
+  logic [xif_pkg::X_NUM_RS  -1:0]                                                               dispatcher_rs_valid              ;
   logic [xif_pkg::X_ID_WIDTH-1:0]                                                               dispatcher_id                    ;
   logic [quadrilatero_pkg::MAX_NUM_READ_OPERANDS-1        :0][$clog2(quadrilatero_pkg::N_REGS)-1:0] dispatcher_rf_read_regs          ;
   logic                                                    [$clog2(quadrilatero_pkg::N_REGS)-1:0] dispatcher_rf_writeback_reg      ;
