@@ -34,7 +34,7 @@ module quadrilatero_decoder
     is_float_o               = 1'b0;
 
     unique casez (instr_i)
-      quadrilatero_instr_pkg::FMMACC_D: begin
+      quadrilatero_instr_pkg::FMMACC_B: begin
         instr_valid_o            = '1;
         exec_unit_o              = quadrilatero_pkg::FU_SYSTOLIC_ARRAY;
         rf_read_regs_o[0]        = instr_i[20:18];  // weight 
@@ -43,19 +43,7 @@ module quadrilatero_decoder
         rf_writeback_reg_o       = instr_i[17:15];  // accumulator
         n_matrix_operands_read_o = 3;
         rf_writeback_o           = '1;
-        datatype_o               = quadrilatero_pkg::SIZE_32;
-        is_float_o               = 1'b1;
-      end
-      quadrilatero_instr_pkg::FMMACC_S: begin
-        instr_valid_o            = '1;
-        exec_unit_o              = quadrilatero_pkg::FU_SYSTOLIC_ARRAY;
-        rf_read_regs_o[0]        = instr_i[20:18];  // weight 
-        rf_read_regs_o[1]        = instr_i[23:21];  // data
-        rf_read_regs_o[2]        = instr_i[17:15];  // accumulator
-        rf_writeback_reg_o       = instr_i[17:15];  // accumulator
-        n_matrix_operands_read_o = 3;
-        rf_writeback_o           = '1;
-        datatype_o               = quadrilatero_pkg::SIZE_32;
+        datatype_o               = quadrilatero_pkg::SIZE_8;
         is_float_o               = 1'b1;
       end
       quadrilatero_instr_pkg::FMMACC_H: begin
@@ -68,6 +56,18 @@ module quadrilatero_decoder
         n_matrix_operands_read_o = 3;
         rf_writeback_o           = '1;
         datatype_o               = quadrilatero_pkg::SIZE_16;
+        is_float_o               = 1'b1;
+      end
+      quadrilatero_instr_pkg::FMMACC_S: begin
+        instr_valid_o            = '1;
+        exec_unit_o              = quadrilatero_pkg::FU_SYSTOLIC_ARRAY;
+        rf_read_regs_o[0]        = instr_i[20:18];  // weight 
+        rf_read_regs_o[1]        = instr_i[23:21];  // data
+        rf_read_regs_o[2]        = instr_i[17:15];  // accumulator
+        rf_writeback_reg_o       = instr_i[17:15];  // accumulator
+        n_matrix_operands_read_o = 3;
+        rf_writeback_o           = '1;
+        datatype_o               = quadrilatero_pkg::SIZE_32;
         is_float_o               = 1'b1;
       end
       quadrilatero_instr_pkg::MMAQA_B: begin
@@ -119,13 +119,13 @@ module quadrilatero_decoder
        quadrilatero_instr_pkg::MCFGNI     : begin
        end
        */
-      quadrilatero_instr_pkg::MLD_B: begin
-        instr_valid_o            = '1;
-        exec_unit_o              = quadrilatero_pkg::FU_LSU;
-        rf_writeback_reg_o       = instr_i[9:7];
-        datatype_o               = quadrilatero_pkg::SIZE_8;
-        rf_writeback_o           = '1;
-      end
+      // quadrilatero_instr_pkg::MLD_B: begin
+      //   instr_valid_o            = '1;
+      //   exec_unit_o              = quadrilatero_pkg::FU_LSU;
+      //   rf_writeback_reg_o       = instr_i[9:7];
+      //   datatype_o               = quadrilatero_pkg::SIZE_8;
+      //   rf_writeback_o           = '1;
+      // end
       /*
         quadrilatero_instr_pkg::MLD_D: begin
         instr_valid_o            = '1;
@@ -133,13 +133,13 @@ module quadrilatero_decoder
         rf_writeback_reg_o       = instr_i[9:7];
         end
       */
-      quadrilatero_instr_pkg::MLD_H: begin
-        instr_valid_o            = '1;
-        exec_unit_o              = quadrilatero_pkg::FU_LSU;
-        rf_writeback_reg_o       = instr_i[9:7];
-        datatype_o               = quadrilatero_pkg::SIZE_16;
-        rf_writeback_o           = '1;
-      end
+      // quadrilatero_instr_pkg::MLD_H: begin
+      //   instr_valid_o            = '1;
+      //   exec_unit_o              = quadrilatero_pkg::FU_LSU;
+      //   rf_writeback_reg_o       = instr_i[9:7];
+      //   datatype_o               = quadrilatero_pkg::SIZE_16;
+      //   rf_writeback_o           = '1;
+      // end
       quadrilatero_instr_pkg::MLD_W: begin
         instr_valid_o            = '1;
         exec_unit_o              = quadrilatero_pkg::FU_LSU;

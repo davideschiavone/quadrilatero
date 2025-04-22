@@ -10,6 +10,7 @@ module quadrilatero_mac_float (
     input  logic [31:0] data_i        ,
     input  logic [31:0] weight_i      ,
     input  logic [31:0] acc_i         ,
+    input  quadrilatero_pkg::datatype_t   datatype_i    ,
     input  logic        valid_i       ,
 
     output logic        mac_finished_o,
@@ -21,6 +22,35 @@ module quadrilatero_mac_float (
   logic               tag_out     ;
   logic               ready       ;
   fpnew_pkg::status_t status_out  ;
+  fpnew_pkg::operation_e operation;
+  fpnew_pkg::fp_format_e fp_src_fmt;
+  logic op_vect;
+
+  // -------------------------------
+  // Determine FPU unit signals
+  // -------------------------------
+  always_comb begin: gen_fpnew_signals
+    if (datatype_i == quadrilatero_pkg::SIZE_32) begin
+      operation  = fpnew_pkg::FMADD;
+      fp_src_fmt = fpnew_pkg::FP32 ;
+      op_vect    = 1'b0;
+    end else if (datatype_i == quadrilatero_pkg::SIZE_16) begin
+      operation  = fpnew_pkg::SDOTP;
+      fp_src_fmt = fpnew_pkg::FP16 ;
+      op_vect    = 1'b1;
+    end
+  end
+
+  // -------------------------------
+  // Configure FPU units
+  // -------------------------------
+  localparam fpnew_pkg::fpu_features_t RV32_QUAD = '{
+    Width:         32,
+    EnableVectors: 1'b0,
+    EnableNanBox:  1'b1,
+    FpFmtMask:     6'b101100,
+    IntFmtMask:    4'b0010
+  };
 
   localparam fpnew_pkg::fpu_implementation_t FPUImplementation [1] = '{
     '{
@@ -30,7 +60,7 @@ module quadrilatero_mac_float (
                     '{   1,   1,   1,  1,   1,      1   },   // DIVSQRT
                     '{   1,   1,   1,  1,   1,      1   },   // NONCOMP
                     '{   2,   2,   2,  2,   2,      2   },   // CONV
-                    '{   2,   2,   2,  2,   2,      2   }    // DOTP
+                    '{   1,   1,   1,  1,   1,      1   }    // DOTP
                     },
         UnitTypes: '{'{fpnew_pkg::PARALLEL,
                        fpnew_pkg::DISABLED,
@@ -56,19 +86,22 @@ module quadrilatero_mac_float (
                         fpnew_pkg::DISABLED,
                         fpnew_pkg::DISABLED,
                         fpnew_pkg::DISABLED},   // CONV
-                    '{fpnew_pkg::DISABLED,
+                    '{fpnew_pkg::MERGED,
                         fpnew_pkg::DISABLED,
-                        fpnew_pkg::DISABLED,
-                        fpnew_pkg::DISABLED,
+                        fpnew_pkg::MERGED,
+                        fpnew_pkg::MERGED,
                         fpnew_pkg::DISABLED,
                         fpnew_pkg::DISABLED}},  // DOTP
         PipeConfig: fpnew_pkg::BEFORE
     }
   };
-
+  
+  // -------------------------------
+  // Instantiate FPU units
+  // -------------------------------
   fpnew_top #(
     // FPU configuration
-    .Features       (fpnew_pkg::RV32F),
+    .Features       (RV32_QUAD),
     .Implementation (FPUImplementation[0])
   ) fpu_inst (
     .clk_i          ,
@@ -77,12 +110,12 @@ module quadrilatero_mac_float (
     // Input signals
     .operands_i     ({acc_i,weight_i,data_i}),
     .rnd_mode_i     (fpnew_pkg::RNE),
-    .op_i           (fpnew_pkg::FMADD),
+    .op_i           (operation),
     .op_mod_i       (1'b0),
-    .src_fmt_i      (fpnew_pkg::FP32),
+    .src_fmt_i      (fp_src_fmt),
     .dst_fmt_i      (fpnew_pkg::FP32),
     .int_fmt_i      (fpnew_pkg::INT32),
-    .vectorial_op_i (1'b0),
+    .vectorial_op_i (op_vect),
     .tag_i          (1'b0),
     .simd_mask_i    ('1),
     // Input Handshake

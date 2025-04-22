@@ -15,9 +15,9 @@ module quadrilatero_xif_decoder#() (
 
   xif_pkg::x_issue_resp_t default_resp;
 
-  xif_pkg::x_issue_resp_t instr_fmmacc_s ;  // FMMACC_S
-  xif_pkg::x_issue_resp_t instr_fmmacc_d ;  // FMMACC_D
+  xif_pkg::x_issue_resp_t instr_fmmacc_b ;  // FMMACC_B
   xif_pkg::x_issue_resp_t instr_fmmacc_h ;  // FMMACC_H
+  xif_pkg::x_issue_resp_t instr_fmmacc_s ;  // FMMACC_S
   xif_pkg::x_issue_resp_t instr_mmaqa_b  ;  // MMAQA_B
   xif_pkg::x_issue_resp_t instr_mmada_h  ;  // MMADA_H
   xif_pkg::x_issue_resp_t instr_mmasa_w  ;  // MMASA_W
@@ -28,9 +28,9 @@ module quadrilatero_xif_decoder#() (
   // xif_pkg::x_issue_resp_t instr_mcfgmi   ;  // MCFGMI
   // xif_pkg::x_issue_resp_t instr_mcfgn    ;  // MCFGN
   // xif_pkg::x_issue_resp_t instr_mcfgni   ;  // MCFGNI
-  xif_pkg::x_issue_resp_t instr_mld_b    ;  // MLD_B
+  // xif_pkg::x_issue_resp_t instr_mld_b    ;  // MLD_B
   // xif_pkg::x_issue_resp_t instr_mld_d    ;  // MLD_D
-  xif_pkg::x_issue_resp_t instr_mld_h    ;  // MLD_H
+  // xif_pkg::x_issue_resp_t instr_mld_h    ;  // MLD_H
   xif_pkg::x_issue_resp_t instr_mld_w    ;  // MLD_W
   // xif_pkg::x_issue_resp_t instr_mmov_mm  ;  // MMOV_MM
   xif_pkg::x_issue_resp_t instr_mst_b    ;  // MST_B
@@ -51,9 +51,9 @@ module quadrilatero_xif_decoder#() (
     instr_mmaqa_b  = default_resp;
     instr_mmada_h  = default_resp;
     instr_mmasa_w  = default_resp;
-    instr_fmmacc_s = default_resp;
-    instr_fmmacc_d = default_resp;
+    instr_fmmacc_b = default_resp;
     instr_fmmacc_h = default_resp;
+    instr_fmmacc_s = default_resp;
     // instr_mcfg     = default_resp;
     // instr_mcfgk    = default_resp;
     // instr_mcfgki   = default_resp;
@@ -61,8 +61,8 @@ module quadrilatero_xif_decoder#() (
     // instr_mcfgmi   = default_resp;
     // instr_mcfgn    = default_resp;
     // instr_mcfgni   = default_resp;
-    instr_mld_b    = default_resp;
-    instr_mld_h    = default_resp;
+    // instr_mld_b    = default_resp;
+    // instr_mld_h    = default_resp;
     instr_mld_w    = default_resp;
     // instr_mld_d    = default_resp;
     // instr_mmov_mm  = default_resp;
@@ -83,14 +83,14 @@ module quadrilatero_xif_decoder#() (
 
   always_comb begin: decoder_block
     unique casez (instr_i)
-      quadrilatero_instr_pkg::FMMACC_S: x_issue_resp_o = instr_fmmacc_s;
-      quadrilatero_instr_pkg::FMMACC_D: x_issue_resp_o = instr_fmmacc_d;
+      quadrilatero_instr_pkg::FMMACC_B: x_issue_resp_o = instr_fmmacc_b;
       quadrilatero_instr_pkg::FMMACC_H: x_issue_resp_o = instr_fmmacc_h;
+      quadrilatero_instr_pkg::FMMACC_S: x_issue_resp_o = instr_fmmacc_s;
       quadrilatero_instr_pkg::MMAQA_B : x_issue_resp_o = instr_mmaqa_b ;
       quadrilatero_instr_pkg::MMADA_H : x_issue_resp_o = instr_mmada_h ;
       quadrilatero_instr_pkg::MMASA_W : x_issue_resp_o = instr_mmasa_w ;
-      quadrilatero_instr_pkg::MLD_B   : x_issue_resp_o = instr_mld_b   ;
-      quadrilatero_instr_pkg::MLD_H   : x_issue_resp_o = instr_mld_h   ;
+      // quadrilatero_instr_pkg::MLD_B   : x_issue_resp_o = instr_mld_b   ;
+      // quadrilatero_instr_pkg::MLD_H   : x_issue_resp_o = instr_mld_h   ;
       quadrilatero_instr_pkg::MLD_W   : x_issue_resp_o = instr_mld_w   ;
       quadrilatero_instr_pkg::MST_B   : x_issue_resp_o = instr_mst_b   ;
       quadrilatero_instr_pkg::MST_H   : x_issue_resp_o = instr_mst_h   ;

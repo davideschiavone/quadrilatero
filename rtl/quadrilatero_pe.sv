@@ -47,6 +47,7 @@ module quadrilatero_pe #(
   logic [DATA_WIDTH-1:0]     fp_acc_out   ;
   logic                      fp_pump      ; 
   logic is_float;
+  quadrilatero_pkg::datatype_t fp_datatype;
 
   assign is_float = sa_ctrl_i.is_float;
 
@@ -58,6 +59,7 @@ module quadrilatero_pe #(
         .weight_i           (fp_weight) ,
         .data_i             (fp_data)   ,
         .acc_i              (fp_acc)    ,
+        .datatype_i         (fp_datatype),
         .valid_i            (fp_pump)   ,
         .acc_o              (fp_acc_out),
         .mac_finished_o     ()
@@ -80,15 +82,16 @@ module quadrilatero_pe #(
   );
 
   always_comb begin: signals_block
-    int_acc    = sa_ctrl_q.is_float ? '0       : acc_q   ;
-    int_data   = sa_ctrl_q.is_float ? '0       : data_q  ;
-    int_weight = sa_ctrl_q.is_float ? '0       : weight_q;
-    int_pump   = sa_ctrl_q.is_float ? '0       : pump_i  ;
+    int_acc     = sa_ctrl_q.is_float ? '0       : acc_q   ;
+    int_data    = sa_ctrl_q.is_float ? '0       : data_q  ;
+    int_weight  = sa_ctrl_q.is_float ? '0       : weight_q;
+    int_pump    = sa_ctrl_q.is_float ? '0       : pump_i  ;
 
-    fp_acc     = is_float ? acc_i    : '0      ;
-    fp_data    = is_float ? data_i   : '0      ;
-    fp_weight  = is_float ? weight_i : '0      ;
-    fp_pump    = is_float ? pump_i   : '0      ;
+    fp_acc      = is_float ? acc_i    : '0      ;
+    fp_data     = is_float ? data_i   : '0      ;
+    fp_weight   = is_float ? weight_i : '0      ;
+    fp_pump     = is_float ? pump_i   : '0      ;
+    fp_datatype = is_float ? sa_ctrl_i.datatype : quadrilatero_pkg::SIZE_32 ;
   end
 
   always_comb begin: next_value
